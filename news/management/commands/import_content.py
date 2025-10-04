@@ -6,11 +6,8 @@ This handles all the complex dependencies and setup required.
 from django.core.management.base import BaseCommand
 from django.core.management import call_command
 from django.db import transaction
-from wagtail.models import Locale, Site
-from wagtailcore.models import Page
-from news.models import Category, ArticlePage, CategoryPage, HomePage, SiteSettings
-import json
-import os
+from wagtail.models import Locale, Site, Page
+from news.models import Category, ArticlePage, CategoryPage, HomePage
 
 
 class Command(BaseCommand):
