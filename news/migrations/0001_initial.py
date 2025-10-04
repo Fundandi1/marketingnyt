@@ -15,7 +15,7 @@ class Migration(migrations.Migration):
     dependencies = [
         ('wagtailimages', '0027_image_description'),
         ('taggit', '0006_rename_taggeditem_content_type_object_id_taggit_tagg_content_8fc721_idx'),
-        ('wagtailcore', '0095_groupsitepermission'),
+        ('wagtailcore', '0094_alter_page_locale'),
     ]
 
     operations = [

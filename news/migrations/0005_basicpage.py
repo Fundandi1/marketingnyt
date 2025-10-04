@@ -8,7 +8,7 @@ import wagtail.fields
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('wagtailcore', '0095_groupsitepermission'),
+        ('wagtailcore', '0094_alter_page_locale'),
         ('news', '0004_video_alter_articlepage_cover_video'),
     ]
 
