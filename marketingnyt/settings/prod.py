@@ -8,6 +8,12 @@ from .base import *
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
+# Allowed hosts for production
+ALLOWED_HOSTS = os.getenv(
+    "ALLOWED_HOSTS",
+    "marketingnyt.onrender.com,localhost,127.0.0.1"
+).split(",")
+
 # Security settings
 SECURE_BROWSER_XSS_FILTER = True
 SECURE_CONTENT_TYPE_NOSNIFF = True
