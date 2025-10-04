@@ -16,5 +16,13 @@ DATABASES = {
     }
 }
 
-print(f"🐘 Using PostgreSQL database: {DATABASES['default']['NAME']}")
-print(f"🐘 Database user: {DATABASES['default']['USER']}")
+# Add visual indicator (only in interactive mode)
+import sys
+if sys.stdout.isatty():
+    print(f"🐘 Using PostgreSQL database: {DATABASES['default']['NAME']}")
+    print(f"🐘 Database user: {DATABASES['default']['USER']}")
+
+# Disable debug logging for management commands
+import logging
+if 'manage.py' in sys.argv and any(cmd in sys.argv for cmd in ['dumpdata', 'loaddata']):
+    logging.disable(logging.DEBUG)
