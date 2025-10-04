@@ -69,11 +69,19 @@ class Command(BaseCommand):
             if not homepage:
                 homepage = HomePage(
                     title='MarketingNyt.dk',
-                    slug='marketingnyt-home',  # Use unique slug
+                    slug='home',  # Use simple slug
                     hero_title='Velkommen til MarketingNyt.dk',
                     hero_subtitle='Din kilde til de seneste nyheder inden for digital marketing',
                 )
-                root_page.add_child(instance=homepage)
+                # Use a different method to add the page
+                homepage.path = '00010001'
+                homepage.depth = 2
+                homepage.save()
+
+                # Update root page numchild
+                root_page.numchild = 1
+                root_page.save()
+
                 homepage.save_revision().publish()
                 self.stdout.write('Created HomePage')
         
