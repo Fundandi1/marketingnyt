@@ -1,0 +1,432 @@
+{% extends "base.html" %}
+{% load static news_tags wagtailimages_tags %}
+
+{% block body_class %}home-page{% endblock %}
+
+{% block json_ld %}
+    {% json_ld_organization as org_data %}
+    <script type="application/ld+json">
+        {{ org_data|safe }}
+    </script>
+{% endblock %}
+
+{% block content %}
+    <!-- Marketing Nyt Page Title -->
+    <section class="page-title-section">
+        <div class="container">
+            <h1 class="page-title">Seneste Nyt</h1>
+        </div>
+    </section>
+
+    <!-- DR.dk Main Content Layout -->
+    <section class="main-content">
+        <div class="container">
+            <div class="content-grid">
+                <!-- Main article (large left side) - NEWEST ARTICLE -->
+                {% with latest_articles|first as main_article %}
+                <article class="main-article">
+                    {% if main_article.cover_video %}
+                        <a href="{{ main_article|article_url }}" {% if main_article|article_target %}target="{{ main_article|article_target }}" rel="{{ main_article|article_rel }}"{% endif %}>
+                            <div class="video-container">
+                                <video loop autoplay muted playsinline class="main-article-video" {% if main_article.cover_video.thumbnail %}poster="{{ main_article.cover_video.thumbnail.file.url }}"{% endif %}>
+                                    <source src="{{ main_article.cover_video.file.url }}" type="video/mp4">
+                                </video>
+                            </div>
+                        </a>
+                    {% elif main_article.cover_image %}
+                        <a href="{{ main_article|article_url }}" {% if main_article|article_target %}target="{{ main_article|article_target }}" rel="{{ main_article|article_rel }}"{% endif %}>
+                            {% image main_article.cover_image fill-800x400 as main_img %}
+                            <img src="{{ main_img.url }}" alt="{{ main_article.title }}" class="main-article-image">
+                        </a>
+                    {% endif %}
+
+                    <div class="article-meta">
+                        {% if main_article.category %}
+                            <span class="article-category">{{ main_article.category.name }}</span>
+                        {% endif %}
+                        <span class="article-time">{{ main_article.published_at|timesince }} siden</span>
+                    </div>
+
+                    <h1>
+                        <a href="{{ main_article|article_url }}" {% if main_article|article_target %}target="{{ main_article|article_target }}" rel="{{ main_article|article_rel }}"{% endif %}>{{ main_article.title }}</a>
+                    </h1>
+
+                    {% if main_article.tags.all %}
+                        <div class="article-tags">
+                            {% for tag in main_article.tags.all %}
+                                <a href="{% url 'tag_detail' tag.slug %}" class="tag-link">{{ tag.name }}</a>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </article>
+                {% endwith %}
+
+                <!-- Sidebar articles - ARTICLES 2 & 3 -->
+                <div class="sidebar-articles">
+                    {% for article in latest_articles|slice:"1:3" %}
+                        <a href="{{ article|article_url }}" class="sidebar-article" {% if article|article_target %}target="{{ article|article_target }}" rel="{{ article|article_rel }}"{% endif %}>
+                            {% if article.cover_video %}
+                                <div class="video-container-small">
+                                    <video loop autoplay muted playsinline class="sidebar-article-video" {% if article.cover_video.thumbnail %}poster="{{ article.cover_video.thumbnail.file.url }}"{% endif %}>
+                                        <source src="{{ article.cover_video.file.url }}" type="video/mp4">
+                                    </video>
+                                </div>
+                            {% elif article.cover_image %}
+                                {% image article.cover_image fill-300x200 as sidebar_img %}
+                                <img src="{{ sidebar_img.url }}" alt="{{ article.title }}" class="sidebar-article-image">
+                            {% endif %}
+
+                            <div class="article-meta">
+                                {% if article.category %}
+                                    <span class="article-category">{{ article.category.name }}</span>
+                                {% endif %}
+                                <span class="article-time">{{ article.published_at|timesince }} siden</span>
+                            </div>
+
+                            <h2>{{ article.title }}</h2>
+                        </a>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- More Articles Section with correct DR.dk layout structure -->
+    <section class="more-articles">
+        <div class="container">
+            <!-- Layout 2: Reverse layout (2 left, 1 right) - ARTICLES 4, 5, 6 -->
+            {% if latest_articles|length > 3 %}
+                <div class="content-grid-reverse">
+                    <!-- Left side: Two smaller articles -->
+                    <div class="sidebar-articles">
+                        {% for article in latest_articles|slice:"3:5" %}
+                            <a href="{{ article|article_url }}" class="sidebar-article" {% if article|article_target %}target="{{ article|article_target }}" rel="{{ article|article_rel }}"{% endif %}>
+                                {% if article.cover_image %}
+                                    {% image article.cover_image fill-300x200 as sidebar_img %}
+                                    <img src="{{ sidebar_img.url }}" alt="{{ article.title }}" class="sidebar-article-image">
+                                {% endif %}
+
+                                <div class="article-meta">
+                                    {% if article.category %}
+                                        <span class="article-category">{{ article.category.name }}</span>
+                                    {% endif %}
+                                    <span class="article-time">{{ article.published_at|timesince }} siden</span>
+                                </div>
+
+                                <h2>{{ article.title }}</h2>
+                            </a>
+                        {% endfor %}
+                    </div>
+
+                    <!-- Right side: One large article -->
+                    {% with latest_articles|slice:"5:6"|first as main_article %}
+                    {% if main_article %}
+                    <article class="main-article">
+                        {% if main_article.cover_image %}
+                            <a href="{{ main_article|article_url }}" {% if main_article|article_target %}target="{{ main_article|article_target }}" rel="{{ main_article|article_rel }}"{% endif %}>
+                                {% image main_article.cover_image fill-800x400 as main_img %}
+                                <img src="{{ main_img.url }}" alt="{{ main_article.title }}" class="main-article-image">
+                            </a>
+                        {% endif %}
+
+                        <div class="article-meta">
+                            {% if main_article.category %}
+                                <span class="article-category">{{ main_article.category.name }}</span>
+                            {% endif %}
+                            <span class="article-time">{{ main_article.published_at|timesince }} siden</span>
+                        </div>
+
+                        <h1>
+                            <a href="{{ main_article|article_url }}" {% if main_article|article_target %}target="{{ main_article|article_target }}" rel="{{ main_article|article_rel }}"{% endif %}>{{ main_article.title }}</a>
+                        </h1>
+                    </article>
+                    {% endif %}
+                    {% endwith %}
+                </div>
+            {% endif %}
+
+            <!-- Layout 3: Three column layout - ARTICLES 7, 8, 9 -->
+            {% if latest_articles|length > 6 %}
+                <div class="articles-three-columns">
+                    {% for article in latest_articles|slice:"6:9" %}
+                        <div class="article-card-small">
+                            {% if article.cover_image %}
+                                <div class="article-image">
+                                    <a href="{{ article|article_url }}" {% if article|article_target %}target="{{ article|article_target }}" rel="{{ article|article_rel }}"{% endif %}>
+                                        {% image article.cover_image fill-300x180 as article_img %}
+                                        <img src="{{ article_img.url }}" alt="{{ article.title }}" loading="lazy">
+                                    </a>
+                                </div>
+                            {% endif %}
+
+                            <div class="article-content">
+                                <div class="article-meta">
+                                    {% if article.category %}
+                                        <span class="article-category">{{ article.category.name }}</span>
+                                    {% endif %}
+                                    <time class="article-time">{{ article.published_at|date:'j M H:i' }}</time>
+                                </div>
+
+                                <h3 class="article-title">
+                                    <a href="{{ article|article_url }}" {% if article|article_target %}target="{{ article|article_target }}" rel="{{ article|article_rel }}"{% endif %}>{{ article.title }}</a>
+                                </h3>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            <!-- Layout 4: Normal layout (1 large left, 2 small right) - ARTICLES 10, 11, 12 -->
+            {% if latest_articles|length > 9 %}
+                <div class="content-grid">
+                    <!-- Left side: One large article -->
+                    {% with latest_articles|slice:"9:10"|first as main_article %}
+                    {% if main_article %}
+                    <article class="main-article">
+                        {% if main_article.cover_image %}
+                            <a href="{{ main_article|article_url }}" {% if main_article|article_target %}target="{{ main_article|article_target }}" rel="{{ main_article|article_rel }}"{% endif %}>
+                                {% image main_article.cover_image fill-800x400 as main_img %}
+                                <img src="{{ main_img.url }}" alt="{{ main_article.title }}" class="main-article-image">
+                            </a>
+                        {% endif %}
+
+                        <div class="article-meta">
+                            {% if main_article.category %}
+                                <span class="article-category">{{ main_article.category.name }}</span>
+                            {% endif %}
+                            <span class="article-time">{{ main_article.published_at|timesince }} siden</span>
+                        </div>
+
+                        <h1>
+                            <a href="{{ main_article|article_url }}" {% if main_article|article_target %}target="{{ main_article|article_target }}" rel="{{ main_article|article_rel }}"{% endif %}>{{ main_article.title }}</a>
+                        </h1>
+                    </article>
+                    {% endif %}
+                    {% endwith %}
+
+                    <!-- Right side: Two smaller articles -->
+                    <div class="sidebar-articles">
+                        {% for article in latest_articles|slice:"10:12" %}
+                            <a href="{{ article|article_url }}" class="sidebar-article" {% if article|article_target %}target="{{ article|article_target }}" rel="{{ article|article_rel }}"{% endif %}>
+                                {% if article.cover_image %}
+                                    {% image article.cover_image fill-300x200 as sidebar_img %}
+                                    <img src="{{ sidebar_img.url }}" alt="{{ article.title }}" class="sidebar-article-image">
+                                {% endif %}
+
+                                <div class="article-meta">
+                                    {% if article.category %}
+                                        <span class="article-category">{{ article.category.name }}</span>
+                                    {% endif %}
+                                    <span class="article-time">{{ article.published_at|timesince }} siden</span>
+                                </div>
+
+                                <h2>{{ article.title }}</h2>
+                            </a>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endif %}
+
+            <!-- Layout 5: Reverse layout (2 small left, 1 large right) - ARTICLES 13, 14, 15 -->
+            {% if latest_articles|length > 12 %}
+                <div class="content-grid-reverse">
+                    <!-- Left side: Two smaller articles -->
+                    <div class="sidebar-articles">
+                        {% for article in latest_articles|slice:"12:14" %}
+                            <a href="{{ article|article_url }}" class="sidebar-article" {% if article|article_target %}target="{{ article|article_target }}" rel="{{ article|article_rel }}"{% endif %}>
+                                {% if article.cover_image %}
+                                    {% image article.cover_image fill-300x200 as sidebar_img %}
+                                    <img src="{{ sidebar_img.url }}" alt="{{ article.title }}" class="sidebar-article-image">
+                                {% endif %}
+
+                                <div class="article-meta">
+                                    {% if article.category %}
+                                        <span class="article-category">{{ article.category.name }}</span>
+                                    {% endif %}
+                                    <span class="article-time">{{ article.published_at|timesince }} siden</span>
+                                </div>
+
+                                <h2>{{ article.title }}</h2>
+                            </a>
+                        {% endfor %}
+                    </div>
+
+                    <!-- Right side: One large article -->
+                    {% with latest_articles|slice:"14:15"|first as main_article %}
+                    {% if main_article %}
+                    <article class="main-article">
+                        {% if main_article.cover_image %}
+                            <a href="{{ main_article|article_url }}" {% if main_article|article_target %}target="{{ main_article|article_target }}" rel="{{ main_article|article_rel }}"{% endif %}>
+                                {% image main_article.cover_image fill-800x400 as main_img %}
+                                <img src="{{ main_img.url }}" alt="{{ main_article.title }}" class="main-article-image">
+                            </a>
+                        {% endif %}
+
+                        <div class="article-meta">
+                            {% if main_article.category %}
+                                <span class="article-category">{{ main_article.category.name }}</span>
+                            {% endif %}
+                            <span class="article-time">{{ main_article.published_at|timesince }} siden</span>
+                        </div>
+
+                        <h1>
+                            <a href="{{ main_article|article_url }}" {% if main_article|article_target %}target="{{ main_article|article_target }}" rel="{{ main_article|article_rel }}"{% endif %}>{{ main_article.title }}</a>
+                        </h1>
+                    </article>
+                    {% endif %}
+                    {% endwith %}
+                </div>
+            {% endif %}
+
+            <!-- Layout 6: Three column layout - ARTICLES 16, 17, 18 -->
+            {% if latest_articles|length > 15 %}
+                <div class="articles-three-columns">
+                    {% for article in latest_articles|slice:"15:18" %}
+                        <div class="article-card-small">
+                            {% if article.cover_image %}
+                                <div class="article-image">
+                                    <a href="{{ article|article_url }}" {% if article|article_target %}target="{{ article|article_target }}" rel="{{ article|article_rel }}"{% endif %}>
+                                        {% image article.cover_image fill-300x180 as article_img %}
+                                        <img src="{{ article_img.url }}" alt="{{ article.title }}" loading="lazy">
+                                    </a>
+                                </div>
+                            {% endif %}
+
+                            <div class="article-content">
+                                <div class="article-meta">
+                                    {% if article.category %}
+                                        <span class="article-category">{{ article.category.name }}</span>
+                                    {% endif %}
+                                    <time class="article-time">{{ article.published_at|date:'j M H:i' }}</time>
+                                </div>
+
+                                <h3 class="article-title">
+                                    <a href="{{ article|article_url }}" {% if article|article_target %}target="{{ article|article_target }}" rel="{{ article|article_rel }}"{% endif %}>{{ article.title }}</a>
+                                </h3>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            <!-- Layout 7: Normal layout - ARTICLES 19, 20, 21 -->
+            {% if latest_articles|length > 18 %}
+                <div class="content-grid">
+                    {% with latest_articles|slice:"18:19"|first as main_article %}
+                    {% if main_article %}
+                    <article class="main-article">
+                        {% if main_article.cover_image %}
+                            <a href="{{ main_article|article_url }}" {% if main_article|article_target %}target="{{ main_article|article_target }}" rel="{{ main_article|article_rel }}"{% endif %}>
+                                {% image main_article.cover_image fill-800x400 as main_img %}
+                                <img src="{{ main_img.url }}" alt="{{ main_article.title }}" class="main-article-image">
+                            </a>
+                        {% endif %}
+                        <div class="article-meta">
+                            {% if main_article.category %}
+                                <span class="article-category">{{ main_article.category.name }}</span>
+                            {% endif %}
+                            <span class="article-time">{{ main_article.published_at|timesince }} siden</span>
+                        </div>
+                        <h1><a href="{{ main_article|article_url }}" {% if main_article|article_target %}target="{{ main_article|article_target }}" rel="{{ main_article|article_rel }}"{% endif %}>{{ main_article.title }}</a></h1>
+                    </article>
+                    {% endif %}
+                    {% endwith %}
+
+                    <div class="sidebar-articles">
+                        {% for article in latest_articles|slice:"19:21" %}
+                            <a href="{{ article|article_url }}" class="sidebar-article" {% if article|article_target %}target="{{ article|article_target }}" rel="{{ article|article_rel }}"{% endif %}>
+                                {% if article.cover_image %}
+                                    {% image article.cover_image fill-300x200 as sidebar_img %}
+                                    <img src="{{ sidebar_img.url }}" alt="{{ article.title }}" class="sidebar-article-image">
+                                {% endif %}
+                                <div class="article-meta">
+                                    {% if article.category %}
+                                        <span class="article-category">{{ article.category.name }}</span>
+                                    {% endif %}
+                                    <span class="article-time">{{ article.published_at|timesince }} siden</span>
+                                </div>
+                                <h2>{{ article.title }}</h2>
+                            </a>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endif %}
+
+            <!-- Layout 8: Reverse layout - ARTICLES 22, 23, 24 -->
+            {% if latest_articles|length > 21 %}
+                <div class="content-grid-reverse">
+                    <div class="sidebar-articles">
+                        {% for article in latest_articles|slice:"21:23" %}
+                            <a href="{{ article|article_url }}" class="sidebar-article" {% if article|article_target %}target="{{ article|article_target }}" rel="{{ article|article_rel }}"{% endif %}>
+                                {% if article.cover_image %}
+                                    {% image article.cover_image fill-300x200 as sidebar_img %}
+                                    <img src="{{ sidebar_img.url }}" alt="{{ article.title }}" class="sidebar-article-image">
+                                {% endif %}
+                                <div class="article-meta">
+                                    {% if article.category %}
+                                        <span class="article-category">{{ article.category.name }}</span>
+                                    {% endif %}
+                                    <span class="article-time">{{ article.published_at|timesince }} siden</span>
+                                </div>
+                                <h2>{{ article.title }}</h2>
+                            </a>
+                        {% endfor %}
+                    </div>
+
+                    {% with latest_articles|slice:"23:24"|first as main_article %}
+                    {% if main_article %}
+                    <article class="main-article">
+                        {% if main_article.cover_image %}
+                            <a href="{{ main_article|article_url }}" {% if main_article|article_target %}target="{{ main_article|article_target }}" rel="{{ main_article|article_rel }}"{% endif %}>
+                                {% image main_article.cover_image fill-800x400 as main_img %}
+                                <img src="{{ main_img.url }}" alt="{{ main_article.title }}" class="main-article-image">
+                            </a>
+                        {% endif %}
+                        <div class="article-meta">
+                            {% if main_article.category %}
+                                <span class="article-category">{{ main_article.category.name }}</span>
+                            {% endif %}
+                            <span class="article-time">{{ main_article.published_at|timesince }} siden</span>
+                        </div>
+                        <h1><a href="{{ main_article|article_url }}" {% if main_article|article_target %}target="{{ main_article|article_target }}" rel="{{ main_article|article_rel }}"{% endif %}>{{ main_article.title }}</a></h1>
+                    </article>
+                    {% endif %}
+                    {% endwith %}
+                </div>
+            {% endif %}
+
+            <!-- Layout 9: Three columns - ARTICLES 25, 26, 27 -->
+            {% if latest_articles|length > 24 %}
+                <div class="articles-three-columns">
+                    {% for article in latest_articles|slice:"24:27" %}
+                        <div class="article-card-small">
+                            {% if article.cover_image %}
+                                <div class="article-image">
+                                    <a href="{{ article|article_url }}" {% if article|article_target %}target="{{ article|article_target }}" rel="{{ article|article_rel }}"{% endif %}>
+                                        {% image article.cover_image fill-300x180 as article_img %}
+                                        <img src="{{ article_img.url }}" alt="{{ article.title }}" loading="lazy">
+                                    </a>
+                                </div>
+                            {% endif %}
+                            <div class="article-content">
+                                <div class="article-meta">
+                                    {% if article.category %}
+                                        <span class="article-category">{{ article.category.name }}</span>
+                                    {% endif %}
+                                    <time class="article-time">{{ article.published_at|date:'j M H:i' }}</time>
+                                </div>
+                                <h3 class="article-title">
+                                    <a href="{{ article|article_url }}" {% if article|article_target %}target="{{ article|article_target }}" rel="{{ article|article_rel }}"{% endif %}>{{ article.title }}</a>
+                                </h3>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            <!-- Pattern continues infinitely... -->
+            <!-- Add more layouts as needed following the same pattern -->
+        </div>
+    </section>
+
+{% endblock %}

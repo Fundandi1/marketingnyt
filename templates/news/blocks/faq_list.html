@@ -1,0 +1,8 @@
+<div class="faq-list">
+    <h3 class="faq-list-title">{{ value.title }}</h3>
+    <div class="faq-items">
+        {% for faq in value.faqs %}
+            {% include_block faq %}
+        {% endfor %}
+    </div>
+</div>

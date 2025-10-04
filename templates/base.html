@@ -1,0 +1,195 @@
+{% load static wagtailimages_tags news_tags %}
+<!DOCTYPE html>
+<html lang="da">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="theme-color" content="#e74c3c">
+    <meta name="color-scheme" content="light dark">
+
+    <!-- Preload critical resources -->
+    <link rel="preload" href="{% static 'css/critical.css' %}" as="style">
+    <link rel="preload" href="{% static 'js/main.js' %}" as="script">
+
+    <!-- DNS prefetch for external resources -->
+    <link rel="dns-prefetch" href="//fonts.googleapis.com">
+    <link rel="dns-prefetch" href="//www.google-analytics.com">
+
+    {% block meta_title %}
+        <title>{% if page.seo_title %}{{ page.seo_title }}{% else %}{{ page.title }}{% endif %}{% if site_settings.site_name %} - {{ site_settings.site_name }}{% endif %}</title>
+    {% endblock %}
+
+    {% block meta_description %}
+        {% if page.search_description %}
+            <meta name="description" content="{{ page.search_description }}">
+        {% elif site_settings.default_meta_description %}
+            <meta name="description" content="{{ site_settings.default_meta_description }}">
+        {% endif %}
+    {% endblock %}
+
+    {% block canonical %}
+        <link rel="canonical" href="{{ request.build_absolute_uri }}">
+    {% endblock %}
+
+    {% block opengraph %}
+        <meta property="og:type" content="website">
+        <meta property="og:title" content="{% if page.seo_title %}{{ page.seo_title }}{% else %}{{ page.title }}{% endif %}">
+        {% if page.search_description %}
+            <meta property="og:description" content="{{ page.search_description }}">
+        {% elif site_settings.default_meta_description %}
+            <meta property="og:description" content="{{ site_settings.default_meta_description }}">
+        {% endif %}
+        <meta property="og:url" content="{{ request.build_absolute_uri }}">
+        {% if page.cover_image %}
+            {% image page.cover_image fill-1200x630 as og_img %}
+            <meta property="og:image" content="{{ og_img.full_url }}">
+        {% elif site_settings.default_og_image %}
+            {% image site_settings.default_og_image fill-1200x630 as default_og_img %}
+            <meta property="og:image" content="{{ default_og_img.full_url }}">
+        {% endif %}
+        <meta property="og:site_name" content="{{ site_settings.site_name }}">
+
+        <!-- Twitter Cards -->
+        <meta name="twitter:card" content="summary_large_image">
+        <meta name="twitter:title" content="{% if page.seo_title %}{{ page.seo_title }}{% else %}{{ page.title }}{% endif %}">
+        {% if page.search_description %}
+            <meta name="twitter:description" content="{{ page.search_description }}">
+        {% elif site_settings.default_meta_description %}
+            <meta name="twitter:description" content="{{ site_settings.default_meta_description }}">
+        {% endif %}
+        {% if page.cover_image %}
+            {% image page.cover_image fill-1200x630 as twitter_img %}
+            <meta name="twitter:image" content="{{ twitter_img.full_url }}">
+        {% elif site_settings.default_og_image %}
+            {% image site_settings.default_og_image fill-1200x630 as default_twitter_img %}
+            <meta name="twitter:image" content="{{ default_twitter_img.full_url }}">
+        {% endif %}
+        {% if site_settings.social_twitter %}
+            <meta name="twitter:site" content="@{{ site_settings.social_twitter }}">
+        {% endif %}
+    {% endblock %}
+
+    {% block json_ld %}{% endblock %}
+
+    <!-- Preconnect to external domains -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <!-- RSS Feed -->
+    <link rel="alternate" type="application/rss+xml" title="{{ site_settings.site_name }} RSS" href="{% url 'rss_feed' %}">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="{% static 'images/favicon.ico' %}">
+
+    <!-- DR.dk Style CSS -->
+    <link rel="stylesheet" href="{% static 'css/dr-style.css' %}?v={% now 'U' %}">
+
+    {% block extra_css %}{% endblock %}
+</head>
+
+<body class="{% block body_class %}{% endblock %}">
+<header class="header">
+    <div class="container">
+        <div class="header-main">
+            <a href="/" class="logo">
+                <img src="{% static 'images/logo.png' %}" alt="MarketingNyt.dk" class="logo-img">
+            </a>
+
+            <nav class="main-nav">
+                <ul class="nav-list">
+                    <li class="nav-item"><a href="/" class="nav-link {% if request.path == '/' %}active{% endif %}">SENESTE NYT</a></li>
+                    {% load news_tags %}
+                    {% get_categories as all_categories %}
+                    {% for category in all_categories %}
+                        {% if category.slug != 'podcasts' %}
+                        <li class="nav-item">
+                            <a href="{% url 'category_detail' category.slug %}" class="nav-link {% if request.resolver_match.url_name == 'category_detail' and category.slug in request.path %}active{% endif %}">
+                                {{ category.name|upper }}
+                            </a>
+                        </li>
+                        {% endif %}
+                    {% endfor %}
+                </ul>
+            </nav>
+
+            <div class="header-actions">
+                <a href="{% url 'category_detail' 'podcasts' %}" class="podcast-btn {% if 'podcasts' in request.path %}active{% endif %}">
+                    <span class="podcast-icon">🎧</span>
+                    <span class="podcast-text">PODCASTS</span>
+                </a>
+            </div>
+        </div>
+    </div>
+</header>
+
+<main class="main">
+    {# Breadcrumbs er helt fjernet #}
+    {% block content %}{% endblock %}
+</main>
+
+<footer class="footer">
+    <div class="container">
+        <div class="footer-content">
+            <!-- Left Column - Brand -->
+            <div class="footer-brand">
+                <div class="footer-logo">
+                    <img src="{% static 'images/logo.png' %}" alt="MarketingNyt.dk" class="footer-logo-img">
+                </div>
+                <p class="footer-tagline">Danmarks førende marketing nyhedssite</p>
+                <p class="footer-description">Få de seneste nyheder, trends og strategier inden for digital marketing. Fra SEO til social media - vi dækker alt.</p>
+
+                <div class="footer-social">
+                    <p class="social-label">Følg os:</p>
+                    <div class="social-icons">
+                        <a href="https://facebook.com/marketingnyt" target="_blank" rel="noopener" class="social-icon facebook" aria-label="Facebook">f</a>
+                        <a href="https://linkedin.com/company/marketingnyt" target="_blank" rel="noopener" class="social-icon linkedin" aria-label="LinkedIn">in</a>
+                        <a href="https://twitter.com/marketingnyt" target="_blank" rel="noopener" class="social-icon twitter" aria-label="Twitter">x</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Column - Kategorier -->
+            <div class="footer-column">
+                <h4 class="footer-title">Kategorier</h4>
+                <ul class="footer-links">
+                    <li><a href="/">Seneste Nyt</a></li>
+                    <li><a href="/category/ai-marketing/">AI & Marketing</a></li>
+                    <li><a href="/category/paid-social/">Paid Social</a></li>
+                    <li><a href="/category/google-ads/">Google Ads</a></li>
+                    <li><a href="/category/content/">Content</a></li>
+                    <li><a href="/category/cro/">CRO</a></li>
+                    <li><a href="/category/podcasts/">Podcasts</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <div class="footer-bottom-left">
+                <div class="footer-social-bottom">
+                    <a href="https://facebook.com/marketingnyt" target="_blank" rel="noopener" class="social-circle facebook" aria-label="Facebook">f</a>
+                    <a href="https://instagram.com/marketingnyt" target="_blank" rel="noopener" class="social-circle instagram" aria-label="Instagram">ig</a>
+                    <a href="https://linkedin.com/company/marketingnyt" target="_blank" rel="noopener" class="social-circle linkedin" aria-label="LinkedIn">in</a>
+                </div>
+            </div>
+
+            <div class="footer-bottom-right">
+                <div class="footer-legal">
+                    <a href="/cookiepolitik/">Cookiepolitik</a>
+                    <a href="/privatlivspolitik/">Privatlivspolitik</a>
+                    <a href="/handelsbetingelser/">Handelsbetingelser</a>
+                </div>
+                <div class="footer-copyright">
+                    <p>© {% now "Y" %} MarketingNyt.dk - Alle rettigheder forbeholdes</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<script src="{% static 'js/main.js' %}" defer></script>
+<script src="{% static 'js/performance.js' %}" defer></script>
+<script src="{% static 'js/advanced-interactions.js' %}" defer></script>
+
+{% block extra_js %}{% endblock %}
+</body>
+</html>

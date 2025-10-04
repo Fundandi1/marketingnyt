@@ -1,0 +1,8 @@
+<div class="callout callout--{{ value.style }}">
+    {% if value.title %}
+        <h3 class="callout-title">{{ value.title }}</h3>
+    {% endif %}
+    <div class="callout-content">
+        {{ value.text|richtext }}
+    </div>
+</div>

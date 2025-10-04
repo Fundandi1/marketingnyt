@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+{% load static wagtailimages_tags news_tags %}
+
+{% block body_class %}tag-page{% endblock %}
+
+{% block content %}
+    <div class="tag-header">
+        <div class="container">
+            <h1 class="tag-title">{{ tag.name }}</h1>
+            <p class="tag-description">Alle artikler tagget med "{{ tag.name }}"</p>
+        </div>
+    </div>
+    
+    <section class="tag-articles">
+        <div class="container">
+            {% if articles %}
+                <div class="articles-grid">
+                    {% for article in articles %}
+                        <article class="article-card">
+                            {% if article.cover_image %}
+                                <div class="article-image">
+                                    <a href="{{ article.get_url }}">
+                                        {% image article.cover_image fill-400x250 as tag_img %}
+                                        <img src="{{ tag_img.url }}"
+                                             alt="{{ article.title }}"
+                                             loading="lazy">
+                                    </a>
+                                </div>
+                            {% endif %}
+                            
+                            <div class="article-content">
+                                <div class="article-meta">
+                                    <span class="article-category">{{ article.category.name }}</span>
+                                    <time class="article-time" datetime="{{ article.published_at|date:'c' }}">
+                                        {{ article.published_at|date:'j. M Y' }}
+                                    </time>
+                                </div>
+                                
+                                <h2 class="article-title">
+                                    <a href="{{ article.get_url }}">{{ article.title }}</a>
+                                </h2>
+                                
+                                {% if article.summary %}
+                                    <p class="article-summary">{{ article.summary|truncatewords:20 }}</p>
+                                {% endif %}
+                                
+                                <div class="article-footer">
+                                    <span class="article-author">{{ article.author }}</span>
+                                    <div class="article-tags">
+                                        {% for tag in article.tags.all %}
+                                            <a href="{% url 'tag_detail' tag.slug %}" class="tag-link">{{ tag.name }}</a>
+                                        {% endfor %}
+                                    </div>
+                                    <a href="{{ article.get_url }}" class="read-more">Læs mere</a>
+                                </div>
+                            </div>
+                        </article>
+                    {% endfor %}
+                </div>
+                
+                {% if articles.has_other_pages %}
+                    <nav class="pagination" aria-label="Pagination">
+                        <div class="pagination-links">
+                            {% if articles.has_previous %}
+                                <a href="?page={{ articles.previous_page_number }}" 
+                                   class="pagination-link pagination-prev"
+                                   rel="prev">
+                                    ← Forrige
+                                </a>
+                            {% endif %}
+                            
+                            <span class="pagination-info">
+                                Side {{ articles.number }} af {{ articles.paginator.num_pages }}
+                            </span>
+                            
+                            {% if articles.has_next %}
+                                <a href="?page={{ articles.next_page_number }}" 
+                                   class="pagination-link pagination-next"
+                                   rel="next">
+                                    Næste →
+                                </a>
+                            {% endif %}
+                        </div>
+                    </nav>
+                {% endif %}
+            {% else %}
+                <div class="no-articles">
+                    <p>Der er ingen artikler med dette tag endnu.</p>
+                </div>
+            {% endif %}
+        </div>
+    </section>
+{% endblock %}

@@ -1,0 +1,85 @@
+title,slug,summary,body,category,author,published_at
+"Google Analytics 4: Komplet migreringsguide","ga4-migreringsguide","Universal Analytics lukker snart ned. Her er din komplette guide til at migrere til Google Analytics 4 uden at miste vigtige data.","Google har annonceret at Universal Analytics stopper med at indsamle data den 1. juli 2023. Det betyder at alle hjemmesider skal migrere til Google Analytics 4 (GA4) for at fortsætte med at tracke deres trafik og brugeradfærd.
+
+**Hvorfor skal du migrere til GA4?**
+
+GA4 er ikke bare en opdatering - det er en helt ny måde at måle på. Den nye platform fokuserer på events frem for sessions og giver bedre indsigt i customer journey på tværs af enheder.
+
+**Migreringstrin:**
+
+1. **Opret GA4 property** i din Google Analytics konto
+2. **Installer GA4 tracking code** på din hjemmeside
+3. **Konfigurer events** og conversions
+4. **Importér målgrupper** fra Universal Analytics
+5. **Opsæt rapporter** og dashboards
+6. **Test tracking** grundigt før go-live
+
+**Vigtige forskelle:**
+
+- Events-baseret model vs. session-baseret
+- Forbedret cross-device tracking
+- Automatisk enhanced ecommerce tracking
+- Machine learning insights
+- Bedre integration med Google Ads
+
+Start migreringen nu for at sikre historisk data sammenligning.","SEO","Maria Hansen","2024-01-15 10:00:00"
+"Instagram Reels: 10 tips til viral content","instagram-reels-viral-tips","Instagram Reels er den hurtigste vej til organisk reach. Lær de 10 vigtigste tips til at skabe content der går viralt og øger dit engagement.","Instagram Reels har revolutioneret måden vi skaber content på. Med over 2 milliarder månedlige brugere er Instagram en kritisk platform for brands der vil nå deres målgruppe.
+
+**10 Tips til Viral Reels:**
+
+1. **Hook i de første 3 sekunder** - Fang opmærksomheden med det samme
+2. **Brug trending audio** - Algoritmen favoriserer populære lyde
+3. **Vertikal format** - Optimer til mobile skærme
+4. **Kort og kontant** - 15-30 sekunder er optimalt
+5. **Call-to-action** - Bed om likes, kommentarer og shares
+6. **Konsistent posting** - Post dagligt for bedst reach
+7. **Hashtag strategi** - Brug 3-5 relevante hashtags
+8. **Storytelling** - Fortæl en historie på kort tid
+9. **Behind-the-scenes** - Autentisk content performer bedst
+10. **Analyser performance** - Brug Instagram Insights til optimering
+
+**Content ideer der virker:**
+
+- Tutorials og how-to guides
+- Before/after transformationer
+- Trending challenges
+- Product demonstrations
+- Team introductions
+- Industry tips og tricks
+
+Husk at eksperimentere og finde din unikke stemme på platformen.","Paid Social","Jonas Nielsen","2024-01-20 14:30:00"
+"ChatGPT prompts til marketing: 50 eksempler","chatgpt-marketing-prompts","Få maksimalt ud af ChatGPT til dine marketing opgaver. Her er 50 konkrete prompts til content creation, SEO, social media og mere.","ChatGPT kan revolutionere din marketing workflow, men kun hvis du bruger de rigtige prompts. Her er 50 testede prompts der giver konkrete resultater.
+
+**Content Creation Prompts:**
+
+1. ""Skriv 10 blog post titler om [emne] for [målgruppe]""
+2. ""Lav en content kalender for [branche] med 30 dages indhold""
+3. ""Generer 5 forskellige headlines til [produkt] der fokuserer på [benefit]""
+4. ""Skriv en email sekvens på 5 emails til [customer journey stage]""
+5. ""Lav en case study struktur for [type virksomhed]""
+
+**SEO Prompts:**
+
+6. ""Find 20 long-tail keywords for [hovedkeyword]""
+7. ""Skriv meta descriptions til [side type] der maksimerer CTR""
+8. ""Lav en FAQ sektion baseret på [emne] søgeintentioner""
+9. ""Generer schema markup for [content type]""
+10. ""Optimer denne tekst til [target keyword] uden at miste læsbarhed""
+
+**Social Media Prompts:**
+
+11. ""Lav 10 Instagram captions til [produkt/service]""
+12. ""Generer LinkedIn posts der driver engagement for [branche]""
+13. ""Skriv Twitter threads om [trending topic] i [industry]""
+14. ""Lav TikTok script ideer for [brand personality]""
+15. ""Generer hashtag strategier for [campaign type]""
+
+**Email Marketing Prompts:**
+
+16. ""Skriv subject lines der øger åbningsrater for [audience]""
+17. ""Lav personaliserede email templates til [customer segment]""
+18. ""Generer re-engagement kampagne for inaktive subscribers""
+19. ""Skriv welcome email serie for [type business]""
+20. ""Lav A/B test variationer af [email element]""
+
+Brug disse prompts som udgangspunkt og tilpas dem til din specifikke situation og brand voice.","AI & Marketing","Anna Larsen","2024-01-25 09:15:00"

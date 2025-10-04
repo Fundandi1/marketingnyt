@@ -1,0 +1,32 @@
+{% load wagtailimages_tags %}
+
+{% if related_articles %}
+    <div class="related-articles-widget">
+        <h3>Relaterede artikler</h3>
+        <div class="related-articles-list">
+            {% for article in related_articles %}
+                <article class="related-article">
+                    {% if article.cover_image %}
+                        <div class="related-article-image">
+                            <a href="{{ article.get_url }}">
+                                {% image article.cover_image fill-150x100 as related_thumb %}
+                                <img src="{{ related_thumb.url }}"
+                                     alt="{{ article.title }}"
+                                     loading="lazy">
+                            </a>
+                        </div>
+                    {% endif %}
+                    
+                    <div class="related-article-content">
+                        <h4 class="related-article-title">
+                            <a href="{{ article.get_url }}">{{ article.title }}</a>
+                        </h4>
+                        <time class="related-article-time" datetime="{{ article.published_at|date:'c' }}">
+                            {{ article.published_at|date:'j. M Y' }}
+                        </time>
+                    </div>
+                </article>
+            {% endfor %}
+        </div>
+    </div>
+{% endif %}

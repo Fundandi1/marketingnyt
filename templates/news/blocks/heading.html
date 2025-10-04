@@ -1,0 +1,7 @@
+{% load news_tags %}
+
+{% with heading_id=value.text|slugify %}
+    <{{ value.level }} id="{{ heading_id }}" class="content-heading content-heading--{{ value.level }}">
+        {{ value.text }}
+    </{{ value.level }}>
+{% endwith %}

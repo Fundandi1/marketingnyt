@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+{% load static wagtailimages_tags wagtailcore_tags news_tags %}
+
+{% block body_class %}article-page{% endblock %}
+
+{% block meta_description %}
+    <meta name="description" content="{{ page.summary }}">
+{% endblock %}
+
+{% block content %}
+    <div class="article-page-container">
+        <div class="article-breadcrumb">
+            <div class="container">
+                <nav class="breadcrumb-nav">
+                    <a href="/" class="breadcrumb-link">Forside</a>
+                    <span class="breadcrumb-separator">›</span>
+                    {% if page.category %}
+                        <a href="#" class="breadcrumb-link">{{ page.category.name }}</a>
+                        <span class="breadcrumb-separator">›</span>
+                    {% endif %}
+                    <span class="breadcrumb-current">{{ page.title|truncatechars:50 }}</span>
+                </nav>
+            </div>
+        </div>
+
+        <div class="container">
+            <article class="article-main">
+                <header class="article-header">
+                    <div class="article-meta">
+                        {% if page.category %}
+                            <span class="article-category">{{ page.category.name }}</span>
+                        {% endif %}
+                        <time class="article-time">
+                            {{ page.published_at|date:'j. F Y' }}
+                        </time>
+                    </div>
+
+                    <h1 class="article-title">{{ page.title }}</h1>
+
+                    {% if page.summary %}
+                        <p class="article-summary">{{ page.summary }}</p>
+                    {% endif %}
+                </header>
+
+                {% if page.cover_video %}
+                    <div class="article-cover">
+                        <div class="video-container">
+                            <video controls loop autoplay muted class="cover-video" {% if page.cover_video.thumbnail %}poster="{{ page.cover_video.thumbnail.file.url }}"{% endif %}>
+                                <source src="{{ page.cover_video.file.url }}" type="video/mp4">
+                                Din browser understøtter ikke video tag.
+                            </video>
+                        </div>
+                    </div>
+                {% elif page.cover_image %}
+                    <div class="article-cover">
+                        {% image page.cover_image width-1200 as cover_img %}
+                        <img src="{{ cover_img.url }}" alt="{{ page.title }}" class="cover-image">
+                    </div>
+                {% endif %}
+
+                <div class="article-body">
+                    <div class="article-content">
+                        {% for block in page.body %}
+                            {% include_block block %}
+                        {% endfor %}
+                    </div>
+                </div>
+            </article>
+
+            {% if related_articles %}
+            <section class="related-section">
+                <h2 class="section-title">Relaterede artikler</h2>
+                <div class="related-grid">
+                    {% for article in related_articles %}
+                    <article class="related-card">
+                        <a href="{{ article|article_url }}" target="{{ article|article_target }}" rel="{{ article|article_rel }}" class="related-card-link">
+                            {% if article.cover_image %}
+                                {% image article.cover_image fill-400x250 as cover_img %}
+                                <div class="related-image">
+                                    <img src="{{ cover_img.url }}" alt="{{ article.title }}">
+                                </div>
+                            {% endif %}
+                            <div class="related-content">
+                                <span class="related-category">{{ article.category.name }}</span>
+                                <h3>{{ article.title }}</h3>
+                                <time>{{ article.published_at|date:"d. M Y" }}</time>
+                            </div>
+                        </a>
+                    </article>
+                    {% endfor %}
+                </div>
+            </section>
+            {% endif %}
+
+            <section class="newsletter-section">
+                <div class="newsletter-container">
+                    <h2 class="newsletter-title">Få de nyeste marketing tips</h2>
+                    <p class="newsletter-description">Tilmeld dig vores nyhedsbrev og få de seneste artikler og guides direkte i din indbakke</p>
+                    <form class="newsletter-form">
+                        <input type="email" placeholder="Din email adresse" class="newsletter-input" required>
+                        <button type="submit" class="newsletter-button">Tilmeld</button>
+                    </form>
+                </div>
+            </section>
+
+            <div class="article-navigation">
+                <a href="/" class="back-button">
+                    <span class="button-icon">←</span>
+                    <span class="button-text">Tilbage til forsiden</span>
+                </a>
+            </div>
+        </div>
+    </div>
+{% endblock %}
