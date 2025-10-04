@@ -16,12 +16,12 @@ class Command(BaseCommand):
         
         # Create categories
         categories_data = [
-            {'name': 'Digital Marketing', 'description': 'Alt om digital markedsføring'},
-            {'name': 'Social Media', 'description': 'Sociale medier og trends'},
-            {'name': 'SEO', 'description': 'Søgemaskineoptimering'},
-            {'name': 'Content Marketing', 'description': 'Indholdsmarkedsføring'},
-            {'name': 'E-commerce', 'description': 'Online handel og e-commerce'},
-            {'name': 'Analytics', 'description': 'Data og analyse'},
+            {'name': 'Paid Social', 'description': 'Facebook Ads, Instagram Ads, TikTok Ads og andre sociale medier'},
+            {'name': 'AI & Marketing', 'description': 'Kunstig intelligens og marketing automation'},
+            {'name': 'Google Ads', 'description': 'Søgebaseret performance marketing'},
+            {'name': 'Content', 'description': 'Content marketing, UGC, email og community'},
+            {'name': 'CRO', 'description': 'Conversion Rate Optimization'},
+            {'name': 'Podcasts', 'description': 'Lyt med til de nyeste marketing podcasts'},
         ]
         
         categories = {}
@@ -104,42 +104,42 @@ class Command(BaseCommand):
         # Create sample articles
         articles_data = [
             {
-                'title': 'Google lancerer nye AI-funktioner til annoncører',
-                'summary': 'Google introducerer avancerede AI-værktøjer der skal hjælpe annoncører med at optimere deres kampagner.',
-                'category': 'Digital Marketing',
+                'title': 'Meta lancerer nye AI-funktioner til annoncører',
+                'summary': 'Meta introducerer avancerede AI-værktøjer der automatisk optimerer annoncekampagner og forbedrer targeting.',
+                'category': 'Paid Social',
                 'body': [
-                    ('paragraph', 'Google har annonceret en række nye AI-funktioner til Google Ads platformen. Disse værktøjer vil hjælpe annoncører med automatisk at optimere deres kampagner baseret på brugeradfærd og markedstrends.'),
-                    ('paragraph', 'De nye funktioner inkluderer automatisk budgivning, intelligent målgruppesegmentering og dynamisk annoncetilpasning.')
+                    ('paragraph', 'Meta har annonceret en række nye AI-funktioner der vil revolutionere måden virksomheder annoncerer på Facebook og Instagram.'),
+                    ('paragraph', 'De nye funktioner inkluderer automatisk kreativ optimering, intelligent budgetfordeling og forbedret audience targeting baseret på machine learning.')
                 ],
                 'author': 'MarketingNyt Redaktion',
             },
             {
-                'title': 'TikTok introducerer nye shopping-funktioner',
-                'summary': 'TikTok udvider sine e-commerce muligheder med nye shopping-funktioner der gør det nemmere for brands at sælge direkte på platformen.',
-                'category': 'Social Media',
+                'title': 'TikTok Shopping: Den nye e-commerce revolution',
+                'summary': 'TikTok Shopping transformerer social commerce med innovative funktioner der gør det nemmere end nogensinde at sælge direkte på platformen.',
+                'category': 'Paid Social',
                 'body': [
-                    ('paragraph', 'TikTok har lanceret en række nye shopping-funktioner der skal gøre det nemmere for virksomheder at sælge produkter direkte gennem platformen.'),
-                    ('paragraph', 'De nye funktioner inkluderer produktkataloger, live shopping events og forbedret integration med e-commerce platforme.')
+                    ('paragraph', 'TikTok har lanceret en omfattende opdatering af deres shopping-funktioner, der gør det muligt for brands at sælge direkte gennem videoer.'),
+                    ('paragraph', 'Den nye "Shop Tab" giver brugerne adgang til et kureret udvalg af produkter, mens "Live Shopping" funktionen muliggør real-time salg under livestreams.')
                 ],
                 'author': 'MarketingNyt Redaktion',
             },
             {
-                'title': 'SEO trends for 2024: Hvad du skal vide',
-                'summary': 'Eksperterne deler deres forudsigelser for de vigtigste SEO trends i 2024.',
-                'category': 'SEO',
+                'title': 'Google Ads Performance Max: Komplet guide til 2024',
+                'summary': 'Alt du behøver at vide om Google Ads Performance Max kampagner, inklusiv best practices og optimeringsstrategier.',
+                'category': 'Google Ads',
                 'body': [
-                    ('paragraph', 'SEO landskabet fortsætter med at udvikle sig, og 2024 bringer nye udfordringer og muligheder for marketingfolk.'),
-                    ('paragraph', 'De vigtigste trends inkluderer øget fokus på AI-genereret indhold, voice search optimering og Core Web Vitals.')
+                    ('paragraph', 'Performance Max kampagner har revolutioneret Google Ads ved at give annoncører adgang til alle Google\'s kanaler gennem én enkelt kampagne.'),
+                    ('paragraph', 'I 2024 har Google introduceret nye funktioner som forbedret audience insights, automatisk kreativ generering og enhanced conversion tracking.')
                 ],
                 'author': 'MarketingNyt Redaktion',
             },
             {
-                'title': 'Content Marketing ROI: Sådan måler du succes',
-                'summary': 'En guide til at måle og optimere dit content marketing ROI med de rigtige metrics og værktøjer.',
-                'category': 'Content Marketing',
+                'title': 'Content Marketing ROI: Sådan måler du succes i 2024',
+                'summary': 'Lær hvordan du måler og optimerer ROI på dit content marketing med de nyeste metoder og værktøjer.',
+                'category': 'Content',
                 'body': [
-                    ('paragraph', 'At måle ROI på content marketing kan være udfordrende, men med de rigtige metrics og værktøjer kan du få værdifuld indsigt i dine kampagners performance.'),
-                    ('paragraph', 'Fokuser på metrics som engagement rate, lead generation og customer lifetime value.')
+                    ('paragraph', 'Content marketing ROI kan være udfordrende at måle, men med de rigtige metoder og værktøjer kan du få præcise insights i din indsats.'),
+                    ('paragraph', 'De vigtigste metrics inkluderer brand awareness lift, lead generation cost, customer acquisition cost og lifetime value påvirkning.')
                 ],
                 'author': 'MarketingNyt Redaktion',
             },
