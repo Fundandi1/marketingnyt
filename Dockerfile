@@ -27,11 +27,14 @@ RUN poetry config virtualenvs.create false
 # Copy poetry files
 COPY pyproject.toml poetry.lock* ./
 
-# Install Python dependencies
-RUN poetry install --only main --without dev
+# Install Python dependencies (without installing the project itself)
+RUN poetry install --only main --without dev --no-root
 
 # Copy project
 COPY . .
+
+# Install the project itself (now that all files including README.md are copied)
+RUN poetry install --only-root
 
 # Create staticfiles directory
 RUN mkdir -p staticfiles
