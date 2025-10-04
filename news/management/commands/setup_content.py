@@ -48,21 +48,34 @@ class Command(BaseCommand):
         
         # Get root page
         root_page = Page.objects.get(id=1)
-        
-        # Create HomePage
-        try:
-            homepage = HomePage.objects.get(slug='home')
-            self.stdout.write('HomePage already exists')
-        except HomePage.DoesNotExist:
-            homepage = HomePage(
-                title='MarketingNyt.dk',
-                slug='home',
-                hero_title='Velkommen til MarketingNyt.dk',
-                hero_subtitle='Din kilde til de seneste nyheder inden for digital marketing',
-            )
-            root_page.add_child(instance=homepage)
-            homepage.save_revision().publish()
-            self.stdout.write('Created HomePage')
+
+        # Create HomePage - check if any HomePage exists first
+        homepage = HomePage.objects.first()
+        if homepage:
+            self.stdout.write(f'HomePage already exists: {homepage.title}')
+        else:
+            # Check if there's already a page with slug 'home'
+            existing_home = Page.objects.filter(slug='home').first()
+            if existing_home:
+                # Convert existing page to HomePage if it's not already
+                if not isinstance(existing_home.specific, HomePage):
+                    self.stdout.write('Converting existing home page to HomePage')
+                    # Delete the existing page and create new HomePage
+                    existing_home.delete()
+                else:
+                    homepage = existing_home.specific
+                    self.stdout.write('Found existing HomePage')
+
+            if not homepage:
+                homepage = HomePage(
+                    title='MarketingNyt.dk',
+                    slug='marketingnyt-home',  # Use unique slug
+                    hero_title='Velkommen til MarketingNyt.dk',
+                    hero_subtitle='Din kilde til de seneste nyheder inden for digital marketing',
+                )
+                root_page.add_child(instance=homepage)
+                homepage.save_revision().publish()
+                self.stdout.write('Created HomePage')
         
         # Create category pages
         for cat_name, category in categories.items():
