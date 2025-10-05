@@ -143,6 +143,9 @@ STATIC_URL = "/static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
 STATICFILES_DIRS = [BASE_DIR / "static"]
 
+# Whitenoise configuration for static files
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+
 # Default primary key field type
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
@@ -327,22 +330,9 @@ CLOUDINARY_STORAGE = {
     'API_SECRET': os.environ.get('CLOUDINARY_API_SECRET', ''),
 }
 
-# Use Cloudinary for media storage
+# Use Cloudinary for media storage (images, documents)
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
 # Media settings
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / "media"
-
-# Wagtail Cloudinary Integration - CRITICAL FIX
-# Force Wagtail to use Cloudinary storage instead of FileSystemStorage
-from cloudinary_storage.storage import MediaCloudinaryStorage
-
-# Override Wagtail's default storage for images and documents
-WAGTAILIMAGES_IMAGE_MODEL = 'wagtailimages.Image'
-WAGTAILDOCS_DOCUMENT_MODEL = 'wagtaildocs.Document'
-
-# This forces Wagtail to use Cloudinary
-if os.environ.get('CLOUDINARY_CLOUD_NAME'):
-    # Only use Cloudinary if credentials are set (production)
-    DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
