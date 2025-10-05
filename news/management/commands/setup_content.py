@@ -13,27 +13,47 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         self.stdout.write('Setting up initial content...')
-        
+
+        # First, ensure we have a proper Wagtail setup
+        from django.core.management import call_command
+
+        # Run migrations to ensure database is up to date
+        call_command('migrate', verbosity=0)
+
+        # Create root page if it doesn't exist
+        root_page = Page.objects.filter(depth=1).first()
+        if not root_page:
+            # Create root page with proper Wagtail structure
+            root_page = Page.add_root(
+                title='Root',
+                slug='root',
+            )
+            self.stdout.write('Created root page')
+
+        # Clear any existing content to avoid conflicts
+        Page.objects.filter(depth__gt=1).delete()
+        Category.objects.all().delete()
+
         # Create categories
         categories_data = [
-            {'name': 'Paid Social', 'description': 'Facebook Ads, Instagram Ads, TikTok Ads og andre sociale medier'},
-            {'name': 'AI & Marketing', 'description': 'Kunstig intelligens og marketing automation'},
-            {'name': 'Google Ads', 'description': 'Søgebaseret performance marketing'},
-            {'name': 'Content', 'description': 'Content marketing, UGC, email og community'},
-            {'name': 'CRO', 'description': 'Conversion Rate Optimization'},
-            {'name': 'Podcasts', 'description': 'Lyt med til de nyeste marketing podcasts'},
+            {'name': 'Paid Social', 'slug': 'paid-social', 'description': 'Facebook Ads, Instagram Ads, TikTok Ads og andre sociale medier'},
+            {'name': 'AI & Marketing', 'slug': 'ai-marketing', 'description': 'Kunstig intelligens og marketing automation'},
+            {'name': 'Google Ads', 'slug': 'google-ads', 'description': 'Søgebaseret performance marketing'},
+            {'name': 'Content', 'slug': 'content', 'description': 'Content marketing, UGC, email og community'},
+            {'name': 'CRO', 'slug': 'cro', 'description': 'Conversion Rate Optimization'},
+            {'name': 'Podcasts', 'slug': 'podcasts', 'description': 'Lyt med til de nyeste marketing podcasts'},
         ]
-        
+
         categories = {}
         for cat_data in categories_data:
-            category, created = Category.objects.get_or_create(
+            category = Category.objects.create(
                 name=cat_data['name'],
-                defaults={'description': cat_data['description']}
+                slug=cat_data['slug'],
+                description=cat_data['description']
             )
             categories[cat_data['name']] = category
-            if created:
-                self.stdout.write(f'Created category: {category.name}')
-        
+            self.stdout.write(f'Created category: {category.name}')
+
         # Create site settings
         site_settings, created = SiteSettings.objects.get_or_create(
             id=1,
@@ -45,21 +65,6 @@ class Command(BaseCommand):
         )
         if created:
             self.stdout.write('Created site settings')
-        
-        # Get or create root page
-        root_page = Page.objects.filter(depth=1).first()
-        if not root_page:
-            # Create root page if it doesn't exist
-            root_page = Page(
-                title='Root',
-                slug='root',
-                path='0001',
-                depth=1,
-                numchild=0,
-                url_path='/',
-            )
-            root_page.save()
-            self.stdout.write('Created root page')
 
         # Create HomePage - check if any HomePage exists first
         homepage = HomePage.objects.first()

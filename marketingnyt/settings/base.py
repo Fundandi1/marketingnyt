@@ -35,6 +35,12 @@ DJANGO_APPS = [
     "django.contrib.sitemaps",
 ]
 
+# Cloudinary - SKAL være før wagtail apps
+CLOUDINARY_APPS = [
+    "cloudinary_storage",
+    "cloudinary",
+]
+
 WAGTAIL_APPS = [
     "wagtail.contrib.forms",
     "wagtail.contrib.redirects",
@@ -56,7 +62,7 @@ LOCAL_APPS = [
     "news",
 ]
 
-INSTALLED_APPS = DJANGO_APPS + WAGTAIL_APPS + LOCAL_APPS
+INSTALLED_APPS = DJANGO_APPS + CLOUDINARY_APPS + WAGTAIL_APPS + LOCAL_APPS
 
 MIDDLEWARE = [
     "django.middleware.cache.UpdateCacheMiddleware",
@@ -313,3 +319,20 @@ LOGGING = {
         },
     },
 }
+
+# Cloudinary Configuration
+import cloudinary
+import cloudinary.uploader
+import cloudinary.api
+
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': os.environ.get('CLOUDINARY_CLOUD_NAME', ''),
+    'API_KEY': os.environ.get('CLOUDINARY_API_KEY', ''),
+    'API_SECRET': os.environ.get('CLOUDINARY_API_SECRET', ''),
+}
+
+# Use Cloudinary for media storage
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+
+# Media settings
+MEDIA_URL = '/media/'
