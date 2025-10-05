@@ -67,7 +67,9 @@ class Command(BaseCommand):
                     # Use sample images for known files
                     sample_images = {
                         'Morgenkaffe til Webshops': 'https://res.cloudinary.com/dilhcgbcf/image/upload/v1728127200/samples/coffee.jpg',
-                        'timothy-hales-bennett-OwvRB-M3GwE-unsplash': 'https://res.cloudinary.com/dilhcgbcf/image/upload/v1728127200/samples/landscapes/nature-mountains.jpg'
+                        'timothy-hales-bennett-OwvRB-M3GwE-unsplash': 'https://res.cloudinary.com/dilhcgbcf/image/upload/v1728127200/samples/landscapes/nature-mountains.jpg',
+                        'campaign-creators-RSc6D7bO0fA-unsplash': 'https://res.cloudinary.com/dilhcgbcf/image/upload/v1728127200/samples/people/kitchen-bar.jpg',
+                        'firmbee-com-eMemmpUojlw-unsplash': 'https://res.cloudinary.com/dilhcgbcf/image/upload/v1728127200/samples/people/bicycle.jpg'
                     }
 
                     if image.title in sample_images:
