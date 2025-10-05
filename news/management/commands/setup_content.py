@@ -46,8 +46,20 @@ class Command(BaseCommand):
         if created:
             self.stdout.write('Created site settings')
         
-        # Get root page
-        root_page = Page.objects.get(id=1)
+        # Get or create root page
+        root_page = Page.objects.filter(depth=1).first()
+        if not root_page:
+            # Create root page if it doesn't exist
+            root_page = Page(
+                title='Root',
+                slug='root',
+                path='0001',
+                depth=1,
+                numchild=0,
+                url_path='/',
+            )
+            root_page.save()
+            self.stdout.write('Created root page')
 
         # Create HomePage - check if any HomePage exists first
         homepage = HomePage.objects.first()
