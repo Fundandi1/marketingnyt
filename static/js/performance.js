@@ -63,8 +63,7 @@
     // Preload critical resources
     function preloadCriticalResources() {
         const criticalImages = [
-            '/static/images/hero-bg.jpg',
-            '/media/original_images/logo.png'
+            '/static/images/logo.png'
         ];
 
         criticalImages.forEach(src => {
