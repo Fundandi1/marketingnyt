@@ -109,7 +109,7 @@ class Command(BaseCommand):
                 legal_page = BasicPage(
                     title=page_data['title'],
                     slug=page_data['slug'],
-                    content=page_data['content'],
+                    body=page_data['content'],
                     seo_title=f"{page_data['title']} - MarketingNyt.dk",
                     search_description=f"Læs vores {page_data['title'].lower()} på MarketingNyt.dk"
                 )
