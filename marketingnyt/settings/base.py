@@ -35,7 +35,7 @@ DJANGO_APPS = [
     "django.contrib.sitemaps",
 ]
 
-# Cloudinary - SKAL være før wagtail apps
+# Cloudinary - MUST be before wagtail apps
 CLOUDINARY_APPS = [
     "cloudinary_storage",
     "cloudinary",
@@ -114,7 +114,7 @@ if DATABASE_URL:
         import dj_database_url
         DATABASES["default"] = dj_database_url.parse(DATABASE_URL)
     except ImportError:
-        pass  # dj_database_url not installed, use SQLite
+        pass
 
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
@@ -142,8 +142,6 @@ USE_TZ = True
 STATIC_URL = "/static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
 STATICFILES_DIRS = [BASE_DIR / "static"]
-
-# Whitenoise configuration for static files
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 # Default primary key field type
@@ -156,11 +154,10 @@ WAGTAIL_ENABLE_UPDATE_CHECK = False
 # Cache configuration with fallback
 REDIS_URL = os.getenv("REDIS_URL", "redis://localhost:6379/0")
 
-# Try Redis first, fallback to local memory cache
 try:
     import redis
     redis_client = redis.from_url(REDIS_URL)
-    redis_client.ping()  # Test connection
+    redis_client.ping()
 
     CACHES = {
         "default": {
@@ -175,7 +172,7 @@ try:
                 "IGNORE_EXCEPTIONS": True,
             },
             "KEY_PREFIX": "marketingnyt",
-            "TIMEOUT": 300,  # 5 minutes default
+            "TIMEOUT": 300,
         },
         "sessions": {
             "BACKEND": "django_redis.cache.RedisCache",
@@ -185,7 +182,7 @@ try:
                 "IGNORE_EXCEPTIONS": True,
             },
             "KEY_PREFIX": "marketingnyt_sessions",
-            "TIMEOUT": 86400,  # 24 hours
+            "TIMEOUT": 86400,
         },
         "pages": {
             "BACKEND": "django_redis.cache.RedisCache",
@@ -195,7 +192,7 @@ try:
                 "IGNORE_EXCEPTIONS": True,
             },
             "KEY_PREFIX": "marketingnyt_pages",
-            "TIMEOUT": 1800,  # 30 minutes
+            "TIMEOUT": 1800,
         },
         "images": {
             "BACKEND": "django_redis.cache.RedisCache",
@@ -205,11 +202,10 @@ try:
                 "IGNORE_EXCEPTIONS": True,
             },
             "KEY_PREFIX": "marketingnyt_images",
-            "TIMEOUT": 3600,  # 1 hour
+            "TIMEOUT": 3600,
         }
     }
 except (ImportError, redis.ConnectionError, redis.TimeoutError):
-    # Fallback to local memory cache
     CACHES = {
         "default": {
             "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
@@ -233,18 +229,15 @@ except (ImportError, redis.ConnectionError, redis.TimeoutError):
         }
     }
 
-# Cache settings
 CACHE_MIDDLEWARE_ALIAS = "default"
-CACHE_MIDDLEWARE_SECONDS = 300  # 5 minutes
+CACHE_MIDDLEWARE_SECONDS = 300
 CACHE_MIDDLEWARE_KEY_PREFIX = "marketingnyt"
-
-# Cache per-site middleware
 CACHE_MIDDLEWARE_ANONYMOUS_ONLY = True
 
 # Session configuration
 SESSION_ENGINE = "django.contrib.sessions.backends.db"
-SESSION_COOKIE_AGE = 86400  # 24 hours
-SESSION_COOKIE_SECURE = False  # Set to True in production
+SESSION_COOKIE_AGE = 86400
+SESSION_COOKIE_SECURE = False
 SESSION_COOKIE_HTTPONLY = True
 SESSION_COOKIE_SAMESITE = 'Lax'
 SESSION_SAVE_EVERY_REQUEST = False
@@ -319,12 +312,11 @@ LOGGING = {
     },
 }
 
-# Cloudinary Configuration
+# Cloudinary Configuration - CRITICAL: Must be configured before storage settings
 import cloudinary
 import cloudinary.uploader
 import cloudinary.api
 
-# Initialize Cloudinary
 cloudinary.config(
     cloud_name=os.getenv('CLOUDINARY_CLOUD_NAME', ''),
     api_key=os.getenv('CLOUDINARY_API_KEY', ''),
@@ -337,12 +329,11 @@ CLOUDINARY_STORAGE = {
     'API_SECRET': os.getenv('CLOUDINARY_API_SECRET', ''),
 }
 
-# Media files configuration
+# Media files - FORCE Cloudinary storage unconditionally
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / "media"
 
-# Use Cloudinary for media storage when configured
-if os.getenv('CLOUDINARY_CLOUD_NAME'):
-    DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
-    WAGTAILIMAGES_IMAGE_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
-    WAGTAILDOCS_DOCUMENT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+# CRITICAL: Set these unconditionally to force Cloudinary
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+WAGTAILIMAGES_IMAGE_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+WAGTAILDOCS_DOCUMENT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
