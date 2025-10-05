@@ -138,18 +138,10 @@ TIME_ZONE = "Europe/Copenhagen"
 USE_I18N = True
 USE_TZ = True
 
-# Static files (CSS, JavaScript, Images)
-STATIC_URL = "/static/"
-STATIC_ROOT = BASE_DIR / "staticfiles"
-STATICFILES_DIRS = [BASE_DIR / "static"]
-
 # Static files configuration
 STATIC_URL = "/static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
-
-STATICFILES_DIRS = [
-    BASE_DIR / "static",
-]
+STATICFILES_DIRS = [BASE_DIR / "static"]
 
 # Whitenoise configuration for static files
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
@@ -332,20 +324,25 @@ import cloudinary
 import cloudinary.uploader
 import cloudinary.api
 
+# Initialize Cloudinary
+cloudinary.config(
+    cloud_name=os.getenv('CLOUDINARY_CLOUD_NAME', ''),
+    api_key=os.getenv('CLOUDINARY_API_KEY', ''),
+    api_secret=os.getenv('CLOUDINARY_API_SECRET', ''),
+)
+
 CLOUDINARY_STORAGE = {
-    'CLOUD_NAME': os.getenv('CLOUDINARY_CLOUD_NAME'),
-    'API_KEY': os.getenv('CLOUDINARY_API_KEY'),
-    'API_SECRET': os.getenv('CLOUDINARY_API_SECRET'),
+    'CLOUD_NAME': os.getenv('CLOUDINARY_CLOUD_NAME', ''),
+    'API_KEY': os.getenv('CLOUDINARY_API_KEY', ''),
+    'API_SECRET': os.getenv('CLOUDINARY_API_SECRET', ''),
 }
 
 # Media files configuration
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / "media"
 
-# Use Cloudinary for media storage in production
-if os.environ.get('CLOUDINARY_CLOUD_NAME'):
+# Use Cloudinary for media storage when configured
+if os.getenv('CLOUDINARY_CLOUD_NAME'):
     DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
-
-    # Force Wagtail to use Cloudinary for images and documents
     WAGTAILIMAGES_IMAGE_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
     WAGTAILDOCS_DOCUMENT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
