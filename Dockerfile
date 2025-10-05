@@ -26,19 +26,19 @@ RUN poetry config virtualenvs.create false
 # Copy poetry files
 COPY pyproject.toml poetry.lock* ./
 
-# Install Python dependencies (without installing the project itself)
+# Install Python dependencies
 RUN poetry install --only main --without dev --no-root
 
 # Copy project
 COPY . .
 
-# Install the project itself (now that all files including README.md are copied)
+# Install the project itself
 RUN poetry install --only-root
 
 # Create staticfiles directory
 RUN mkdir -p staticfiles
 
-# Set Django settings module for build commands
+# CRITICAL: Set Django settings BEFORE running collectstatic
 ENV DJANGO_SETTINGS_MODULE=marketingnyt.settings.prod
 
 # Collect static files
