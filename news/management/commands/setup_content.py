@@ -20,7 +20,7 @@ class Command(BaseCommand):
         # Run migrations to ensure database is up to date
         call_command('migrate', verbosity=0)
 
-        # Create root page if it doesn't exist
+        # Get or create root page
         root_page = Page.objects.filter(depth=1).first()
         if not root_page:
             # Create root page with proper Wagtail structure
@@ -33,6 +33,10 @@ class Command(BaseCommand):
         # Clear any existing content to avoid conflicts
         Page.objects.filter(depth__gt=1).delete()
         Category.objects.all().delete()
+
+        # Fix root page after deletion
+        root_page.numchild = 0
+        root_page.save()
 
         # Create categories
         categories_data = [
@@ -67,10 +71,7 @@ class Command(BaseCommand):
             self.stdout.write('Created site settings')
 
         # Create HomePage using proper Wagtail method
-        homepage = HomePage.objects.first()
-        if homepage:
-            self.stdout.write(f'HomePage already exists: {homepage.title}')
-        else:
+        try:
             homepage = HomePage(
                 title='MarketingNyt.dk',
                 slug='home',
@@ -80,6 +81,21 @@ class Command(BaseCommand):
             root_page.add_child(instance=homepage)
             homepage.save_revision().publish()
             self.stdout.write('Created HomePage')
+        except Exception as e:
+            self.stdout.write(f'Error creating HomePage: {e}')
+            # Fallback: create HomePage directly
+            homepage = HomePage.objects.create(
+                title='MarketingNyt.dk',
+                slug='home',
+                path='00010001',
+                depth=2,
+                hero_title='Velkommen til MarketingNyt.dk',
+                hero_subtitle='Din kilde til de seneste nyheder inden for digital marketing',
+            )
+            root_page.numchild = 1
+            root_page.save()
+            homepage.save_revision().publish()
+            self.stdout.write('Created HomePage (fallback method)')
         
         # Create category pages
         for cat_name, category in categories.items():
