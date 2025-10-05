@@ -4,7 +4,6 @@ FROM python:3.12-slim
 # Set environment variables
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
-ENV DJANGO_SETTINGS_MODULE=marketingnyt.settings.prod
 
 # Set work directory
 WORKDIR /app
@@ -38,6 +37,9 @@ RUN poetry install --only-root
 
 # Create staticfiles directory
 RUN mkdir -p staticfiles
+
+# Set Django settings module for build commands
+ENV DJANGO_SETTINGS_MODULE=marketingnyt.settings.prod
 
 # Collect static files
 RUN python manage.py collectstatic --noinput
