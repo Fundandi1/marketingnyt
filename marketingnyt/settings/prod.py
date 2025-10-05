@@ -39,7 +39,7 @@ CSP_IMG_SRC = ("'self'", "data:", "cdn.cloudflare.com")
 CSP_FONT_SRC = ("'self'", "cdn.cloudflare.com")
 
 # Static files with Whitenoise
-STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+# STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 # Email configuration
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
