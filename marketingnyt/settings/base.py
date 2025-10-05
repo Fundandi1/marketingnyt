@@ -345,3 +345,7 @@ MEDIA_ROOT = BASE_DIR / "media"
 # Use Cloudinary for media storage in production
 if os.environ.get('CLOUDINARY_CLOUD_NAME'):
     DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+
+    # Force Wagtail to use Cloudinary for images and documents
+    WAGTAILIMAGES_IMAGE_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+    WAGTAILDOCS_DOCUMENT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
