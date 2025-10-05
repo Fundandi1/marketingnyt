@@ -143,10 +143,6 @@ STATIC_URL = "/static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
 STATICFILES_DIRS = [BASE_DIR / "static"]
 
-# Media files
-MEDIA_URL = "/media/"
-MEDIA_ROOT = BASE_DIR / "media"
-
 # Default primary key field type
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
@@ -264,7 +260,7 @@ SECURE_REFERRER_POLICY = 'strict-origin-when-cross-origin'
 CSP_DEFAULT_SRC = ("'self'",)
 CSP_SCRIPT_SRC = ("'self'", "'unsafe-inline'", "data:", "*.google-analytics.com")
 CSP_STYLE_SRC = ("'self'", "'unsafe-inline'", "fonts.googleapis.com")
-CSP_IMG_SRC = ("'self'", "data:", "*.google-analytics.com")
+CSP_IMG_SRC = ("'self'", "data:", "*.google-analytics.com", "*.cloudinary.com", "res.cloudinary.com")
 CSP_FONT_SRC = ("'self'", "fonts.gstatic.com")
 CSP_CONNECT_SRC = ("'self'", "*.google-analytics.com")
 
@@ -336,3 +332,17 @@ DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
 # Media settings
 MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / "media"
+
+# Wagtail Cloudinary Integration - CRITICAL FIX
+# Force Wagtail to use Cloudinary storage instead of FileSystemStorage
+from cloudinary_storage.storage import MediaCloudinaryStorage
+
+# Override Wagtail's default storage for images and documents
+WAGTAILIMAGES_IMAGE_MODEL = 'wagtailimages.Image'
+WAGTAILDOCS_DOCUMENT_MODEL = 'wagtaildocs.Document'
+
+# This forces Wagtail to use Cloudinary
+if os.environ.get('CLOUDINARY_CLOUD_NAME'):
+    # Only use Cloudinary if credentials are set (production)
+    DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
