@@ -66,41 +66,20 @@ class Command(BaseCommand):
         if created:
             self.stdout.write('Created site settings')
 
-        # Create HomePage - check if any HomePage exists first
+        # Create HomePage using proper Wagtail method
         homepage = HomePage.objects.first()
         if homepage:
             self.stdout.write(f'HomePage already exists: {homepage.title}')
         else:
-            # Check if there's already a page with slug 'home'
-            existing_home = Page.objects.filter(slug='home').first()
-            if existing_home:
-                # Convert existing page to HomePage if it's not already
-                if not isinstance(existing_home.specific, HomePage):
-                    self.stdout.write('Converting existing home page to HomePage')
-                    # Delete the existing page and create new HomePage
-                    existing_home.delete()
-                else:
-                    homepage = existing_home.specific
-                    self.stdout.write('Found existing HomePage')
-
-            if not homepage:
-                homepage = HomePage(
-                    title='MarketingNyt.dk',
-                    slug='home',  # Use simple slug
-                    hero_title='Velkommen til MarketingNyt.dk',
-                    hero_subtitle='Din kilde til de seneste nyheder inden for digital marketing',
-                )
-                # Use a different method to add the page
-                homepage.path = '00010001'
-                homepage.depth = 2
-                homepage.save()
-
-                # Update root page numchild
-                root_page.numchild = 1
-                root_page.save()
-
-                homepage.save_revision().publish()
-                self.stdout.write('Created HomePage')
+            homepage = HomePage(
+                title='MarketingNyt.dk',
+                slug='home',
+                hero_title='Velkommen til MarketingNyt.dk',
+                hero_subtitle='Din kilde til de seneste nyheder inden for digital marketing',
+            )
+            root_page.add_child(instance=homepage)
+            homepage.save_revision().publish()
+            self.stdout.write('Created HomePage')
         
         # Create category pages
         for cat_name, category in categories.items():
@@ -181,22 +160,18 @@ class Command(BaseCommand):
                 self.stdout.write(f'Created article: {article_data["title"]}')
         
         # Update site to use HomePage as root
-        try:
-            site = Site.objects.get(hostname='localhost')
-            site.root_page = homepage
-            site.hostname = 'marketingnyt.onrender.com'
-            site.port = 80
-            site.save()
-            self.stdout.write('Updated site settings')
-        except Site.DoesNotExist:
-            Site.objects.create(
-                hostname='marketingnyt.onrender.com',
-                port=80,
-                root_page=homepage,
-                is_default_site=True,
-                site_name='MarketingNyt.dk'
-            )
-            self.stdout.write('Created new site')
+        # Clear existing sites first
+        Site.objects.all().delete()
+
+        # Create new site with proper configuration
+        Site.objects.create(
+            hostname='marketingnyt.onrender.com',
+            port=80,
+            root_page=homepage,
+            is_default_site=True,
+            site_name='MarketingNyt.dk'
+        )
+        self.stdout.write('Created site with HomePage as root')
         
         self.stdout.write(self.style.SUCCESS('Successfully set up initial content!'))
         self.stdout.write(f'HomePage: {homepage.title}')
