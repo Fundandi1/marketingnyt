@@ -81,8 +81,3 @@ LOGGING = {
         },
     },
 }
-
-# Cloudinary environment variables for production
-os.environ.setdefault('CLOUDINARY_CLOUD_NAME', 'dilhcgbcf')
-os.environ.setdefault('CLOUDINARY_API_KEY', '136429122244213')
-os.environ.setdefault('CLOUDINARY_API_SECRET', '4A07pK-_fPREyc4JddaWvqKgOSM')
