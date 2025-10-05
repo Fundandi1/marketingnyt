@@ -11,7 +11,7 @@ DEBUG = False
 # Allowed hosts for production
 ALLOWED_HOSTS = os.getenv(
     "ALLOWED_HOSTS",
-    "marketingnyt.onrender.com,localhost,127.0.0.1"
+    "marketingnyt.onrender.com,marketingnyt.dk,www.marketingnyt.dk,localhost,127.0.0.1"
 ).split(",")
 
 # Security settings
