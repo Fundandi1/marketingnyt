@@ -142,7 +142,6 @@ USE_TZ = True
 STATIC_URL = "/static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
 STATICFILES_DIRS = [BASE_DIR / "static"]
-STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 # Default primary key field type
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
@@ -312,7 +311,7 @@ LOGGING = {
     },
 }
 
-# Cloudinary Configuration - CRITICAL: Must be configured before storage settings
+# Cloudinary Configuration
 import cloudinary
 import cloudinary.uploader
 import cloudinary.api
@@ -329,11 +328,20 @@ CLOUDINARY_STORAGE = {
     'API_SECRET': os.getenv('CLOUDINARY_API_SECRET', ''),
 }
 
-# Media files - FORCE Cloudinary storage unconditionally
+# Media files configuration
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / "media"
 
-# CRITICAL: Set these unconditionally to force Cloudinary
-DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+# Modern Django storage configuration (Django 4.2+)
+STORAGES = {
+    'default': {
+        'BACKEND': 'cloudinary_storage.storage.MediaCloudinaryStorage',
+    },
+    'staticfiles': {
+        'BACKEND': 'whitenoise.storage.CompressedManifestStaticFilesStorage',
+    },
+}
+
+# Wagtail-specific storage settings
 WAGTAILIMAGES_IMAGE_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 WAGTAILDOCS_DOCUMENT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
