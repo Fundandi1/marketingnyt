@@ -8,16 +8,15 @@ from django.http import HttpResponse, Http404
 from django.shortcuts import render, get_object_or_404
 from django.urls import reverse
 from django.utils import timezone
-from wagtail.models import Site
 
 from .models import ArticlePage, Category
 
 
 def robots_txt(request):
     """Robots.txt view."""
-    site = Site.find_for_request(request)
-    site_url = site.root_url if site else "https://marketingnyt.dk"
-    
+    # Always use the main domain for sitemap URL
+    site_url = "https://www.marketingnyt.dk"
+
     content = f"""User-agent: *
 Allow: /
 
