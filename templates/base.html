@@ -79,7 +79,8 @@
     <link rel="alternate" type="application/rss+xml" title="{{ site_settings.site_name }} RSS" href="{% url 'rss_feed' %}">
 
     <!-- Favicon -->
-    <link rel="icon" type="image/x-icon" href="{% static 'images/favicon.ico' %}">
+    <link rel="icon" type="image/png" href="{% static 'images/favicon.png' %}">
+    <link rel="apple-touch-icon" href="{% static 'images/favicon.png' %}">
 
     <!-- DR.dk Style CSS -->
     <link rel="stylesheet" href="{% static 'css/dr-style.css' %}?v={% now 'U' %}">
