@@ -34,14 +34,27 @@ def sitemap_index(request):
     """Sitemap index view."""
     from django.contrib.sitemaps import views as sitemap_views
     from django.contrib.sitemaps.views import index
-    
+
     sitemaps = {
         "articles": ArticleSitemap,
         "categories": CategorySitemap,
         "static": StaticSitemap,
     }
-    
+
     return index(request, sitemaps)
+
+
+def sitemap_section(request, section):
+    """Individual sitemap section view."""
+    from django.contrib.sitemaps.views import sitemap
+
+    sitemaps = {
+        "articles": ArticleSitemap,
+        "categories": CategorySitemap,
+        "static": StaticSitemap,
+    }
+
+    return sitemap(request, sitemaps, section)
 
 
 def health_check(request):

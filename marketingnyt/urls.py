@@ -5,6 +5,7 @@ URL configuration for marketingnyt project.
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
+from django.contrib.sitemaps import views as sitemap_views
 from django.urls import include, path
 from wagtail import urls as wagtail_urls
 from wagtail.admin import urls as wagtailadmin_urls
@@ -19,6 +20,7 @@ urlpatterns = [
     # SEO URLs
     path("robots.txt", news_views.robots_txt, name="robots_txt"),
     path("sitemap.xml", news_views.sitemap_index, name="sitemap_index"),
+    path("sitemap-<section>.xml", news_views.sitemap_section, name="django.contrib.sitemaps.views.sitemap"),
     path("feed.xml", news_views.rss_feed, name="rss_feed"),
     path("healthz", news_views.health_check, name="health_check"),
     # Category URLs
