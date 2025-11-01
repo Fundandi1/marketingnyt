@@ -12,6 +12,7 @@ from wagtail.admin import urls as wagtailadmin_urls
 from wagtail.documents import urls as wagtaildocs_urls
 
 from news import views as news_views
+from news import api_views
 
 urlpatterns = [
     path("django-admin/", admin.site.urls),
@@ -23,6 +24,9 @@ urlpatterns = [
     path("sitemap-<section>.xml", news_views.sitemap_section, name="django.contrib.sitemaps.views.sitemap"),
     path("feed.xml", news_views.rss_feed, name="rss_feed"),
     path("healthz", news_views.health_check, name="health_check"),
+    # API URLs
+    path("api/create-article/", api_views.create_article_api, name="create_article_api"),
+    path("api/status/", api_views.api_status, name="api_status"),
     # Category URLs
     path("category/<slug:category_slug>/", news_views.category_detail, name="category_detail"),
     # Tag URLs

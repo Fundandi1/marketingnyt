@@ -345,3 +345,6 @@ STORAGES = {
 # Wagtail-specific storage settings
 WAGTAILIMAGES_IMAGE_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 WAGTAILDOCS_DOCUMENT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+
+# API settings for automation
+AUTOMATION_API_KEY = os.environ.get('AUTOMATION_API_KEY', 'your-secret-api-key-here')
