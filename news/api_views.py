@@ -15,6 +15,51 @@ import requests
 from io import BytesIO
 from django.core.files.images import ImageFile
 import uuid
+import urllib.parse
+
+
+def get_marketing_image(title, category="marketing"):
+    """
+    Get a relevant marketing image from Unsplash based on title and category
+    """
+    try:
+        # Marketing-related search terms based on category
+        marketing_terms = {
+            'digital-marketing': ['digital marketing', 'online marketing', 'social media'],
+            'seo': ['seo', 'search engine', 'google analytics'],
+            'social-media': ['social media', 'instagram', 'facebook marketing'],
+            'content-marketing': ['content marketing', 'blogging', 'copywriting'],
+            'email-marketing': ['email marketing', 'newsletter', 'email campaign'],
+            'analytics': ['analytics', 'data visualization', 'charts'],
+            'marketing': ['marketing', 'business', 'strategy']
+        }
+
+        # Get search terms for category
+        search_terms = marketing_terms.get(category, marketing_terms['marketing'])
+        search_query = search_terms[0]  # Use first term
+
+        # Unsplash API endpoint (free tier - no API key needed for basic usage)
+        unsplash_url = f"https://source.unsplash.com/1200x600/?{urllib.parse.quote(search_query)}"
+
+        # Download image
+        response = requests.get(unsplash_url, timeout=10)
+        if response.status_code == 200:
+            # Create unique filename
+            filename = f"article_{uuid.uuid4().hex[:8]}.jpg"
+            image_file = ImageFile(BytesIO(response.content), name=filename)
+
+            # Create Wagtail Image object
+            cover_image = Image(
+                title=f"Cover for {title[:50]}...",
+                file=image_file
+            )
+            cover_image.save()
+            return cover_image
+
+    except Exception as e:
+        print(f"Failed to download marketing image: {e}")
+
+    return None
 
 
 @csrf_exempt
@@ -22,7 +67,7 @@ import uuid
 def create_article_api(request):
     """
     API endpoint for creating articles via Make.com automation
-    
+
     Expected JSON payload:
     {
         "title": "Article Title",
@@ -30,9 +75,15 @@ def create_article_api(request):
         "body": "Full article content in HTML",
         "category": "category-slug",
         "author": "Author Name",
-        "cover_image_url": "https://example.com/image.jpg",
+        "cover_image_url": "https://example.com/image.jpg" (optional - auto-generates if not provided),
         "api_key": "your-secret-api-key"
     }
+
+    Features:
+    - Automatic image generation from Unsplash based on category
+    - Unique slug generation
+    - SEO optimization (title, meta description)
+    - Automatic publishing
     """
     try:
         # Parse JSON data
@@ -64,10 +115,12 @@ def create_article_api(request):
         if not home_page:
             return JsonResponse({'error': 'No homepage found'}, status=500)
         
-        # Handle cover image if provided
+        # Handle cover image - try provided URL first, then auto-generate
         cover_image = None
         cover_image_url = data.get('cover_image_url')
+
         if cover_image_url:
+            # Try to use provided image URL
             try:
                 response = requests.get(cover_image_url, timeout=10)
                 if response.status_code == 200:
@@ -78,7 +131,11 @@ def create_article_api(request):
                     )
                     cover_image.save()
             except Exception as e:
-                print(f"Failed to download image: {e}")
+                print(f"Failed to download provided image: {e}")
+
+        # If no image provided or download failed, get automatic marketing image
+        if not cover_image:
+            cover_image = get_marketing_image(title, category_slug)
         
         # Create unique slug
         base_slug = title.lower().replace(' ', '-').replace('æ', 'ae').replace('ø', 'oe').replace('å', 'aa')
