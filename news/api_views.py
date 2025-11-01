@@ -5,10 +5,7 @@ import json
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
-from django.utils.decorators import method_decorator
-from django.contrib.auth.decorators import login_required
 from django.conf import settings
-from wagtail.models import Page
 from wagtail.images.models import Image
 from .models import ArticlePage, Category, HomePage
 import requests
@@ -63,8 +60,15 @@ def get_marketing_image(title, category="marketing"):
 
 
 @csrf_exempt
-@require_http_methods(["POST"])
+@require_http_methods(["POST", "OPTIONS"])
 def create_article_api(request):
+    # Handle preflight OPTIONS request
+    if request.method == 'OPTIONS':
+        response = JsonResponse({'status': 'ok'})
+        response['Access-Control-Allow-Origin'] = '*'
+        response['Access-Control-Allow-Methods'] = 'POST, OPTIONS'
+        response['Access-Control-Allow-Headers'] = 'Content-Type'
+        return response
     """
     API endpoint for creating articles via Make.com automation
 
@@ -165,14 +169,21 @@ def create_article_api(request):
         
         # Publish the article
         article.save_revision().publish()
-        
-        return JsonResponse({
+
+        response = JsonResponse({
             'success': True,
             'article_id': article.id,
             'slug': article.slug,
             'url': article.get_full_url(),
             'message': f'Article "{title}" created and published successfully'
         })
+
+        # Add CORS headers for Make.com
+        response['Access-Control-Allow-Origin'] = '*'
+        response['Access-Control-Allow-Methods'] = 'POST, OPTIONS'
+        response['Access-Control-Allow-Headers'] = 'Content-Type'
+
+        return response
         
     except json.JSONDecodeError:
         return JsonResponse({'error': 'Invalid JSON'}, status=400)

@@ -348,3 +348,14 @@ WAGTAILDOCS_DOCUMENT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryS
 
 # API settings for automation
 AUTOMATION_API_KEY = os.environ.get('AUTOMATION_API_KEY', 'your-secret-api-key-here')
+
+# CSRF settings for API endpoints
+CSRF_TRUSTED_ORIGINS = [
+    'https://marketingnyt.onrender.com',
+    'https://marketingnyt.dk',
+    'https://www.marketingnyt.dk',
+    'https://hook.eu1.make.com',  # Make.com webhooks
+    'https://hook.eu2.make.com',  # Make.com webhooks
+    'https://hook.us1.make.com',  # Make.com webhooks
+    'https://hook.us2.make.com',  # Make.com webhooks
+]
