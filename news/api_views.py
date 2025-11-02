@@ -24,19 +24,72 @@ def convert_html_to_streamfield(html_content):
     if not html_content:
         return []
 
-    # Split content by headings and paragraphs
     blocks = []
 
-    # Split by H2 headings
-    sections = re.split(r'(## .+)', html_content)
+    # Split content into lines for processing
+    lines = html_content.split('\n')
+    current_paragraph = []
 
-    for i, section in enumerate(sections):
-        if not section.strip():
+    for line in lines:
+        line = line.strip()
+
+        # Skip empty lines
+        if not line:
+            # If we have accumulated paragraph content, add it as a rich_text block
+            if current_paragraph:
+                paragraph_text = '\n'.join(current_paragraph)
+                # Convert markdown-style formatting to HTML
+                paragraph_text = re.sub(r'\*\*(.*?)\*\*', r'<b>\1</b>', paragraph_text)  # Bold
+                paragraph_text = re.sub(r'\*(.*?)\*', r'<i>\1</i>', paragraph_text)      # Italic
+                paragraph_text = paragraph_text.replace('\n', '<br>')                     # Line breaks
+
+                blocks.append({
+                    'type': 'rich_text',
+                    'value': paragraph_text
+                })
+                current_paragraph = []
             continue
 
-        # Check if this is a heading
-        if section.startswith('## '):
-            heading_text = section.replace('## ', '').strip()
+        # Check if this is a heading (## or # format)
+        if line.startswith('## '):
+            # Add any accumulated paragraph first
+            if current_paragraph:
+                paragraph_text = '\n'.join(current_paragraph)
+                paragraph_text = re.sub(r'\*\*(.*?)\*\*', r'<b>\1</b>', paragraph_text)
+                paragraph_text = re.sub(r'\*(.*?)\*', r'<i>\1</i>', paragraph_text)
+                paragraph_text = paragraph_text.replace('\n', '<br>')
+
+                blocks.append({
+                    'type': 'rich_text',
+                    'value': paragraph_text
+                })
+                current_paragraph = []
+
+            # Add the heading
+            heading_text = line.replace('## ', '').strip()
+            blocks.append({
+                'type': 'heading',
+                'value': {
+                    'level': 'h2',
+                    'text': heading_text
+                }
+            })
+        elif line.startswith('# '):
+            # Add any accumulated paragraph first
+            if current_paragraph:
+                paragraph_text = '\n'.join(current_paragraph)
+                paragraph_text = re.sub(r'\*\*(.*?)\*\*', r'<b>\1</b>', paragraph_text)
+                paragraph_text = re.sub(r'\*(.*?)\*', r'<i>\1</i>', paragraph_text)
+                paragraph_text = paragraph_text.replace('\n', '<br>')
+
+                blocks.append({
+                    'type': 'rich_text',
+                    'value': paragraph_text
+                })
+                current_paragraph = []
+
+            # Add the heading as H2 (since we only support h2 and h3)
+            heading_text = line.replace('# ', '').strip()
             blocks.append({
                 'type': 'heading',
                 'value': {
@@ -45,23 +98,20 @@ def convert_html_to_streamfield(html_content):
                 }
             })
         else:
-            # This is content - split into paragraphs and process
-            paragraphs = section.split('\n\n')
+            # This is regular content - add to current paragraph
+            current_paragraph.append(line)
 
-            for paragraph in paragraphs:
-                paragraph = paragraph.strip()
-                if not paragraph:
-                    continue
+    # Add any remaining paragraph content
+    if current_paragraph:
+        paragraph_text = '\n'.join(current_paragraph)
+        paragraph_text = re.sub(r'\*\*(.*?)\*\*', r'<b>\1</b>', paragraph_text)
+        paragraph_text = re.sub(r'\*(.*?)\*', r'<i>\1</i>', paragraph_text)
+        paragraph_text = paragraph_text.replace('\n', '<br>')
 
-                # Convert markdown-style formatting to HTML
-                paragraph = re.sub(r'\*\*(.*?)\*\*', r'<b>\1</b>', paragraph)  # Bold
-                paragraph = re.sub(r'\*(.*?)\*', r'<i>\1</i>', paragraph)      # Italic
-                paragraph = paragraph.replace('\n', '<br>')                     # Line breaks
-
-                blocks.append({
-                    'type': 'rich_text',
-                    'value': paragraph
-                })
+        blocks.append({
+            'type': 'rich_text',
+            'value': paragraph_text
+        })
 
     return blocks
 
