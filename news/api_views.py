@@ -2,10 +2,12 @@
 API views for automated content creation
 """
 import json
+import re
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 from django.conf import settings
+from django.utils.text import slugify
 from wagtail.images.models import Image
 from .models import ArticlePage, Category, HomePage
 import requests
@@ -13,6 +15,55 @@ from io import BytesIO
 from django.core.files.images import ImageFile
 import uuid
 import urllib.parse
+
+
+def convert_html_to_streamfield(html_content):
+    """
+    Convert HTML content to StreamField format for ArticlePage
+    """
+    if not html_content:
+        return []
+
+    # Split content by headings and paragraphs
+    blocks = []
+
+    # Split by H2 headings
+    sections = re.split(r'(## .+)', html_content)
+
+    for i, section in enumerate(sections):
+        if not section.strip():
+            continue
+
+        # Check if this is a heading
+        if section.startswith('## '):
+            heading_text = section.replace('## ', '').strip()
+            blocks.append({
+                'type': 'heading',
+                'value': {
+                    'level': 'h2',
+                    'text': heading_text
+                }
+            })
+        else:
+            # This is content - split into paragraphs and process
+            paragraphs = section.split('\n\n')
+
+            for paragraph in paragraphs:
+                paragraph = paragraph.strip()
+                if not paragraph:
+                    continue
+
+                # Convert markdown-style formatting to HTML
+                paragraph = re.sub(r'\*\*(.*?)\*\*', r'<b>\1</b>', paragraph)  # Bold
+                paragraph = re.sub(r'\*(.*?)\*', r'<i>\1</i>', paragraph)      # Italic
+                paragraph = paragraph.replace('\n', '<br>')                     # Line breaks
+
+                blocks.append({
+                    'type': 'rich_text',
+                    'value': paragraph
+                })
+
+    return blocks
 
 
 def get_marketing_image(title, category="marketing"):
@@ -101,12 +152,15 @@ def create_article_api(request):
         # Required fields
         title = data.get('title')
         summary = data.get('summary')
-        body = data.get('body')
+        body_html = data.get('body')
         category_slug = data.get('category', 'marketing')
         author = data.get('author', 'MarketingNyt Redaktion')
-        
-        if not all([title, summary, body]):
+
+        if not all([title, summary, body_html]):
             return JsonResponse({'error': 'Missing required fields: title, summary, body'}, status=400)
+
+        # Convert HTML body to StreamField format
+        body = convert_html_to_streamfield(body_html)
         
         # Get or create category
         try:
