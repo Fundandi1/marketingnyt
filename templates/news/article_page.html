@@ -44,14 +44,16 @@
                     <!-- Author Profile Section -->
                     <div class="author-profile-section">
                         <div class="author-dates">
-                            <span class="author-date">Opdateret: {{ page.last_published_at|date:'j. F Y' }}</span>
                             <span class="author-date">Publiceret: {{ page.published_at|date:'j. F Y' }}</span>
                         </div>
 
                         <div class="author-profile">
                             <div class="author-avatar">
                                 {% load wagtailimages_tags %}
-                                {% if site_settings.logo %}
+                                {% if page.author_image %}
+                                    {% image page.author_image fill-60x60 as author_img %}
+                                    <img src="{{ author_img.url }}" alt="{{ page.author }}" class="author-image">
+                                {% elif site_settings.logo %}
                                     {% image site_settings.logo fill-60x60 as author_img %}
                                     <img src="{{ author_img.url }}" alt="{{ page.author }}" class="author-image">
                                 {% endif %}

@@ -249,6 +249,14 @@ class ArticlePage(Page):
         related_name="articles"
     )
     author = models.CharField(max_length=100)
+    author_image = models.ForeignKey(
+        "wagtailimages.Image",
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="+",
+        help_text="Author profile image"
+    )
     published_at = models.DateTimeField(default=timezone.now)
     is_featured = models.BooleanField(default=False)
     external_url = models.URLField(
@@ -264,6 +272,7 @@ class ArticlePage(Page):
         FieldPanel("cover_video"),
         FieldPanel("category"),
         FieldPanel("author"),
+        FieldPanel("author_image"),
         FieldPanel("published_at"),
         FieldPanel("is_featured"),
         FieldPanel("external_url"),
