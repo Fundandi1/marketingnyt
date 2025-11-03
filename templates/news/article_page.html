@@ -43,24 +43,18 @@
 
                     <!-- Author Profile Section -->
                     <div class="author-profile-section">
-                        <div class="author-dates">
-                            <span class="author-date">Publiceret: {{ page.published_at|date:'j. F Y' }}</span>
-                        </div>
-
                         <div class="author-profile">
                             <div class="author-avatar">
                                 {% load wagtailimages_tags %}
                                 {% if page.author_image %}
-                                    {% image page.author_image fill-60x60 as author_img %}
-                                    <img src="{{ author_img.url }}" alt="{{ page.author }}" class="author-image">
-                                {% elif site_settings.logo %}
-                                    {% image site_settings.logo fill-60x60 as author_img %}
+                                    {% image page.author_image fill-120x120 as author_img %}
                                     <img src="{{ author_img.url }}" alt="{{ page.author }}" class="author-image">
                                 {% endif %}
                             </div>
                             <div class="author-info">
                                 <div class="author-name">{{ page.author }}</div>
-                                <div class="author-title">Founder & CEO @ MarketingNyt.dk</div>
+                                <div class="author-title">Redaktør & MarketingNyt.dk</div>
+                                <div class="author-date">Publiceret: {{ page.published_at|date:'j. F Y' }}</div>
                             </div>
                         </div>
                     </div>
